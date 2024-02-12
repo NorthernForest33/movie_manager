@@ -25,14 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    BlocProvider.of<HomeMovieListsBloc>(context).add(LoadHomeMovieLists(queryParameters: listQueryParametrs));
+    BlocProvider.of<HomeMovieListsBloc>(context)
+        .add(LoadHomeMovieLists(queryParameters: listQueryParametrs));
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final movieListBloc =  context.watch<HomeMovieListsBloc>();
+    final movieListBloc = context.watch<HomeMovieListsBloc>();
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -87,9 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 if (state is HomeMovieListsFailure) {
                   return FailureMessageWidget(
-                    movieListBloc: movieListBloc,
-                    buttonTryAgain: true,
-                  );
+                      onBlocEvent: () => movieListBloc.add(LoadHomeMovieLists(queryParameters: listQueryParametrs)));
                 }
                 return const SizedBox(
                   height: 650,

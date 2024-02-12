@@ -19,8 +19,8 @@ class SearchMovieScreen extends StatefulWidget {
 class _SearchMovieScreenState extends State<SearchMovieScreen> {
   @override
   void initState() {
-    BlocProvider.of<MovieListBloc>(context).add(LoadMovieList());
     super.initState();
+    BlocProvider.of<MovieListBloc>(context).add(LoadMovieList());
   }
 
   @override
@@ -28,6 +28,7 @@ class _SearchMovieScreenState extends State<SearchMovieScreen> {
     final theme = Theme.of(context);
     final movieListBloc = BlocProvider.of<MovieListBloc>(context);
     final searchTextController = TextEditingController();
+    final scrollController = ScrollController();
     return RefreshIndicator(
         onRefresh: () async {
           final completer = Completer();
@@ -40,6 +41,7 @@ class _SearchMovieScreenState extends State<SearchMovieScreen> {
         color: theme.primaryColor,
         edgeOffset: 55,
         child: CustomScrollView(
+          controller: scrollController,
           keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           physics: const BouncingScrollPhysics(
               decelerationRate: ScrollDecelerationRate.fast),
@@ -56,16 +58,17 @@ class _SearchMovieScreenState extends State<SearchMovieScreen> {
               centerTitle: true,
               bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(54),
-                  child: SearchButtonWidget(controller: searchTextController)),
+                  child: SearchButtonWidget(
+                      textController: searchTextController,
+                      scrollController: scrollController)),
             ),
             BlocBuilder<MovieListBloc, MovieListState>(
               builder: (context, state) {
                 if (state is MovieListLoaded) {
                   final movieList = state.movieList;
                   return MovieCardWidget(
-                    movieList: movieList,
-                    searchTextController: searchTextController
-                  );
+                      movieList: movieList,
+                      searchTextController: searchTextController);
                 }
                 if (state is MovieListFailure) {
                   return SliverToBoxAdapter(
@@ -74,7 +77,8 @@ class _SearchMovieScreenState extends State<SearchMovieScreen> {
                         SizedBox(
                             height: MediaQuery.of(context).size.height / 1.5,
                             child: FailureMessageWidget(
-                                movieListBloc: movieListBloc)),
+                                onBlocEvent: () =>
+                                    movieListBloc.add(LoadMovieList()))),
                         const SizedBox(height: 100)
                       ],
                     ),
