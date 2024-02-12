@@ -32,7 +32,7 @@ class SearchButtonWidget extends StatelessWidget {
             searchDebounce = Timer(const Duration(milliseconds: 500), () async {
               bloc.add(LoadMovieList(
                   queryParameters: MovieListRequestParametrs()
-                      .searchRequstParametrs(query, '1'), isSearch: true));
+                      .searchRequstParametrs(query, '1')));
             });
           },
           onTap: () {

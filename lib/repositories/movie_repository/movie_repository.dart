@@ -29,23 +29,46 @@ class MovieListRequestParametrs {
 
 class MovieRepository {
   Dio dio = Dio();
+  static const String _apiKey = 'a72aeb65f93911542ff66814d78affd0';
+  static const _imageUrl = 'https://image.tmdb.org/t/p/w500';
   Map<String, String> headers = {
-    'accept': 'application/json',
-    'X-API-KEY': '49BHQRJ-YJFMW5K-PPSYSZN-S2NRJNC'
+    'Authorization': 'a72aeb65f93911542ff66814d78affd0',
+    'accept': 'application/json'
   };
 
-  Future<MovieResponse> getMovies(Map<String, String> queryParameters,
-      [bool? isSearch]) async {
+  Future<MovieResponse> getMovies(int page) async {
     print('try');
     final dynamic json = await Dio().get(
-        isSearch == null || false
-            ? 'https://api.kinopoisk.dev/v1.4/movie'
-            : 'https://api.kinopoisk.dev/v1.4/movie/search',
-        options: Options(headers: headers),
-        queryParameters: queryParameters);
+        'https://api.themoviedb.org/3/movie/popular',
+        queryParameters: {
+          'api_key': _apiKey,
+          'language': 'en-US',
+          'page': page.toString(),
+        });
     print('get');
     final jsonMap = json.data as Map<String, dynamic>;
     final result = MovieResponse.fromJson(jsonMap);
     return result;
   }
+
+  Future<MovieResponse> searchMovies(String query, int page) async {
+    print('try');
+    final dynamic json = await Dio().get(
+        'https://api.themoviedb.org/3/search/movie',
+        queryParameters: {
+          'api_key': _apiKey,
+          'language': 'en-US',
+          'query': query,
+          'page': page.toString(),
+          'include_adult': true.toString(),
+        });
+    print('get');
+    final jsonMap = json.data as Map<String, dynamic>;
+    final result = MovieResponse.fromJson(jsonMap);
+    return result;
+  }
+}
+
+class ImageDownLoader {
+  static String imageUrl(String path) => MovieRepository._imageUrl + path;
 }

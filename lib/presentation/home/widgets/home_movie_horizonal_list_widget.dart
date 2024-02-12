@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:movie_manager/domain/entity/movie_response/movie.dart';
+import 'package:movie_manager/repositories/movie_repository/movie_repository.dart';
 
 class MovieHorizontalListWidget extends StatelessWidget {
   final String nameGroup;
@@ -110,6 +112,7 @@ class _MovieItemListWidgetState extends State<MovieItemListWidget> {
           itemExtent: 145,
           itemBuilder: (context, index) {
             final movie = movieList[index];
+            final releaseDate = movie.releaseDate != null ? DateFormat.yMMMMd().format(movie.releaseDate!) : '';
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 6),
               child: Stack(
@@ -128,8 +131,7 @@ class _MovieItemListWidgetState extends State<MovieItemListWidget> {
                     ),
                     clipBehavior: Clip.hardEdge,
                     child: Column(children: [
-                      Image.network(
-                        movie.poster?.url ?? '',
+                      Image.network(ImageDownLoader.imageUrl(movie.posterPath ?? ''),
                       ),
                       Expanded(
                         child: Padding(
@@ -139,7 +141,7 @@ class _MovieItemListWidgetState extends State<MovieItemListWidget> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               const SizedBox(height: 4),
-                              Text(movie.name ?? '',
+                              Text(movie.originalTitle,
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -149,7 +151,7 @@ class _MovieItemListWidgetState extends State<MovieItemListWidget> {
                                     fontWeight: FontWeight.w600,
                                   )),
                               Text(
-                                  '${movie.countries?.first.name ?? ''} \n ${movie.year ?? ''} ',
+                                  releaseDate,
                                   textAlign: TextAlign.center,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,

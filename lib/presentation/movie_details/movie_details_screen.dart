@@ -1,6 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:movie_manager/domain/entity/movie_response/movie.dart';
+import 'package:movie_manager/repositories/movie_repository/movie_repository.dart';
 
 @RoutePage()
 class MovieDetailsScreen extends StatelessWidget {
@@ -10,8 +12,7 @@ class MovieDetailsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    String movieGenres =
-        movie.genres?.map((genre) => genre.name).join('/ ') ?? '';
+    final releaseDate = movie.releaseDate != null ? DateFormat.yMMMMd().format(movie.releaseDate!) : '';
     return Scaffold(
       backgroundColor: theme.primaryColor,
       body: CustomScrollView(
@@ -26,8 +27,7 @@ class MovieDetailsScreen extends StatelessWidget {
             expandedHeight: 540,
             flexibleSpace: FlexibleSpaceBar(
               collapseMode: CollapseMode.parallax,
-              background: Image.network(
-                movie.poster!.previewUrl!,
+              background: Image.network(ImageDownLoader.imageUrl(movie.posterPath ?? ''),
                 fit: BoxFit.cover,
               ),
             ),
@@ -48,7 +48,7 @@ class MovieDetailsScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          movie.name ?? '',
+                          movie.title,
                           textAlign: TextAlign.center,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 2,
@@ -57,13 +57,12 @@ class MovieDetailsScreen extends StatelessWidget {
                               height: 1.2,
                               fontWeight: FontWeight.w500),
                         ),
-                        movie.premiere != null
-                            ? Text(movie.premiere!.world!.toIso8601String())
+                        movie.releaseDate != null
+                            ? Text(releaseDate)
                             : const SizedBox.shrink(),
-                        Text(movieGenres,
-                            style: const TextStyle(
-                                color: Colors.grey, fontSize: 14)),
-                        Text(movie.rating?.imdb.toString() ?? '')
+                        const Text('movieGenres',
+                            style: TextStyle(color: Colors.grey, fontSize: 14)),
+                        Text(movie.voteAverage.toString())
                       ],
                     ),
                   ),
@@ -90,105 +89,21 @@ class MovieDetailsScreen extends StatelessWidget {
                               fontSize: 18,
                               fontWeight: FontWeight.bold),
                         ),
-                        Text(movie.description ?? movie.shortDescription ?? '',
+                        Text(movie.overview,
                             style: const TextStyle(
                                 color: Colors.white, fontSize: 14))
                       ],
                     ),
                     const SizedBox(height: 12),
-                    Column(
-                      children: [
-                        const Text(
-                          'Top Billed Cast',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        movie.persons != null ?
-                        Padding(
-                          padding: const EdgeInsets.only(left: 6),
-                          child: SizedBox(
-                            height: 270.0,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: movie.persons!.length,
-                              itemExtent: 145,
-                              itemBuilder: (context, index) {
-                                final person = movie.persons![index];
-                                return Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 6),
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          border: Border.all(
-                                              color: Colors.black
-                                                  .withOpacity(0.85)),
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(16)),
-                                          boxShadow: [
-                                            BoxShadow(
-                                                offset: const Offset(0, 2),
-                                                color: Colors.black
-                                                    .withOpacity(0.3),
-                                                blurRadius: 16),
-                                          ],
-                                        ),
-                                        clipBehavior: Clip.hardEdge,
-                                        child: Column(children: [
-                                          Image.network(
-                                            person.photo ?? '',
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 3),
-                                              child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                children: [
-                                                  const SizedBox(height: 4),
-                                                  Text(person.name ?? '',
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      maxLines: 2,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        height: 1,
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      )),
-                                                ],
-                                              ),
-                                            ),
-                                          )
-                                        ]),
-                                      ),
-                                      Material(
-                                        color: Colors.transparent,
-                                        child: InkWell(
-                                          borderRadius: const BorderRadius.all(
-                                              Radius.circular(16)),
-                                          onTap: () {},
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                        )
-                      : const SizedBox.shrink()],
-                    )
+                    const Column(children: [
+                      Text(
+                        'Top Billed Cast',
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ])
                   ],
                 ),
               ),

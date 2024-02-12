@@ -22,7 +22,7 @@ class HomeMovieListsBloc extends Bloc<HomeMovieListsEvent, HomeMovieListsState> 
 
         List<MovieResponse> homeMovieLists = [];
         for (int i = 0; i < event.queryParameters.length; i++) {
-        homeMovieLists.add(await movieRepository.getMovies(event.queryParameters[i]));
+        homeMovieLists.add(await movieRepository.getMovies(1));
         }
         emit(HomeMovieListsLoaded(homeMovieLists: homeMovieLists));
         

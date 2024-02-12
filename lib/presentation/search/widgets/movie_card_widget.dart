@@ -1,8 +1,10 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:movie_manager/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
 import 'package:movie_manager/domain/entity/movie_response/movie.dart';
+import 'package:movie_manager/repositories/movie_repository/movie_repository.dart';
 import 'package:movie_manager/router/router.dart';
 
 class MovieCardWidget extends StatelessWidget {
@@ -21,6 +23,7 @@ class MovieCardWidget extends StatelessWidget {
             movieListBloc.loadNextPage(
                 index, movieList, searchTextController.text);
             final movie = movieList[index];
+            final releaseDate = movie.releaseDate != null ? DateFormat.yMMMMd().format(movie.releaseDate!) : '';
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Container(
@@ -41,11 +44,11 @@ class MovieCardWidget extends StatelessWidget {
                 child: Stack(
                   children: [
                     Row(children: [
-                      movie.poster?.previewUrl == null
+                      movie.posterPath == null
                           ? const SizedBox(width: 85.0)
                           : Image.network(
-                              movie.poster!.previewUrl!,
-                              fit: BoxFit.cover,
+                              ImageDownLoader.imageUrl(movie.posterPath!),
+                              fit: BoxFit.fill,
                             ),
                       Expanded(
                         child: Column(
@@ -53,7 +56,7 @@ class MovieCardWidget extends StatelessWidget {
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(movie.name ?? '',
+                              child: Text(movie.title,
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
@@ -61,8 +64,7 @@ class MovieCardWidget extends StatelessWidget {
                                     fontWeight: FontWeight.bold,
                                   )),
                             ),
-                            Text(
-                                '${movie.year.toString()}, ${movie.countries?.first.name ?? ''} ',
+                            Text(releaseDate,
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(color: Colors.grey)),
@@ -70,10 +72,7 @@ class MovieCardWidget extends StatelessWidget {
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8),
-                              child: Text(
-                                  movie.shortDescription ??
-                                      movie.description ??
-                                      '',
+                              child: Text(movie.overview,
                                   maxLines: 4,
                                   overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(height: 1.2)),
@@ -88,7 +87,8 @@ class MovieCardWidget extends StatelessWidget {
                         borderRadius:
                             const BorderRadius.all(Radius.circular(16)),
                         onTap: () {
-                          AutoRouter.of(context).push(MovieDetailsRoute(movie: movie));
+                          AutoRouter.of(context)
+                              .push(MovieDetailsRoute(movie: movie));
                         },
                       ),
                     )

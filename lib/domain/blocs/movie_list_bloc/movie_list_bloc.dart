@@ -32,10 +32,10 @@ class MovieListBloc extends Bloc<MovieListEvent, MovieListState> {
         emit(MovieListLoading());
       }
 
-      final movieList = await movieRepository.getMovies(event.queryParameters, event.isSearch);
+      final movieList = await movieRepository.getMovies(1);
       emit(MovieListLoaded(
         movieList: [...?event.movieList, ...movieList.movies],
-        totalPage: movieList.pages,
+        totalPage: movieList.totalPages,
       ));
     } catch (e) {
       emit(MovieListFailure(exception: e));

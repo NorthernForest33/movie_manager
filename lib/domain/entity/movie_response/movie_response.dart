@@ -3,21 +3,19 @@ import 'package:movie_manager/domain/entity/movie_response/movie.dart';
 
 part 'movie_response.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class MovieResponse {
-  @JsonKey(name: 'docs')
+  @JsonKey(name: 'results')
   final List<Movie> movies;
-  final int total;
-  final int limit;
+  final int totalResults;
+  final int totalPages;
   final int page;
-  final int pages;
 
   MovieResponse({
     required this.movies,
-    required this.total,
-    required this.limit,
+    required this.totalPages,
+    required this.totalResults,
     required this.page,
-    required this.pages,
   });
 
   factory MovieResponse.fromJson(Map<String, dynamic> json) =>
