@@ -20,10 +20,14 @@ class MovieCardWidget extends StatelessWidget {
         itemExtent: 140,
         delegate: SliverChildBuilderDelegate(
           (BuildContext context, index) {
-            movieListBloc.loadNextPage(
-                index, movieList, searchTextController.text);
+            movieListBloc.isLoadNextPage(
+                currentMovie: index,
+                totalMovies: movieList.length,
+                query: searchTextController.text);
             final movie = movieList[index];
-            final releaseDate = movie.releaseDate != null ? DateFormat.yMMMMd().format(movie.releaseDate!) : '';
+            final releaseDate = movie.releaseDate != null
+                ? DateFormat.yMMMMd().format(movie.releaseDate!)
+                : '';
             return Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Container(

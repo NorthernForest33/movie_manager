@@ -17,16 +17,16 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final listQueryParametrs = [
-    MovieListRequestParametrs.popularMovies,
-    MovieListRequestParametrs.releasedSoonMovies,
-    MovieListRequestParametrs.mostRatedMovie
+  final movieRequestLink = [
+    MovieRequestLink.popular,
+    MovieRequestLink.upcoming,
+    MovieRequestLink.topRated
   ];
 
   @override
   void initState() {
     BlocProvider.of<HomeMovieListsBloc>(context)
-        .add(LoadHomeMovieLists(queryParameters: listQueryParametrs));
+        .add(LoadHomeMovieLists(movieRequestLink: movieRequestLink));
     super.initState();
   }
 
@@ -39,7 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
       onRefresh: () async {
         final completer = Completer();
         movieListBloc.add(LoadHomeMovieLists(
-            queryParameters: listQueryParametrs, completer: completer));
+            movieRequestLink: movieRequestLink, completer: completer));
         return completer.future;
       },
       edgeOffset: 50,
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
                 if (state is HomeMovieListsFailure) {
                   return FailureMessageWidget(
-                      onBlocEvent: () => movieListBloc.add(LoadHomeMovieLists(queryParameters: listQueryParametrs)));
+                      onBlocEvent: () => movieListBloc.add(LoadHomeMovieLists(movieRequestLink: movieRequestLink)));
                 }
                 return const SizedBox(
                   height: 650,

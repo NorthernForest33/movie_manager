@@ -4,10 +4,10 @@ abstract class HomeMovieListsEvent extends Equatable {}
 
 
 class LoadHomeMovieLists extends HomeMovieListsEvent {
-  final List<Map<String, String>> queryParameters;
+  final List<String> movieRequestLink;
   final Completer? completer;
 
-  LoadHomeMovieLists({this.completer, required this.queryParameters});
+  LoadHomeMovieLists({this.completer, required this.movieRequestLink});
 
   @override
   List<Object?> get props => [completer];

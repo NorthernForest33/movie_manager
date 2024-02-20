@@ -9,31 +9,28 @@ class MovieListInitital extends MovieListState {
 }
 
 class MovieListLoading extends MovieListState {
+
   @override
   List<Object?> get props => [];
 }
 
 class MovieListLoaded extends MovieListState {
-  final List<Movie> movieList;
-  final int currentPage;
-  final int totalPage;
+  final MovieListContainer movieListContainer;
 
-  MovieListLoaded({this.currentPage = 0, this.movieList = const <Movie>[], this.totalPage = 1});
+  MovieListLoaded({required this.movieListContainer});
 
-  @override
-  List<Object?> get props => [movieList];
+  MovieListLoaded.initial() : movieListContainer = const MovieListContainer.initial();
 
   MovieListLoaded copyWith({
-    List<Movie>? movieList,
-    int? currentPage,
-    int? totalPage,
+    MovieListContainer? movieListContainer,
   }) {
     return MovieListLoaded(
-      movieList: movieList ?? this.movieList,
-      currentPage: currentPage ?? this.currentPage,
-      totalPage: totalPage ?? this.totalPage,
+      movieListContainer: movieListContainer ?? this.movieListContainer,
     );
   }
+
+  @override
+  List<Object?> get props => [movieListContainer];
 }
 
 class MovieListFailure extends MovieListState {

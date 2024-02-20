@@ -21,8 +21,8 @@ class HomeMovieListsBloc extends Bloc<HomeMovieListsEvent, HomeMovieListsState> 
         }
 
         List<MovieResponse> homeMovieLists = [];
-        for (int i = 0; i < event.queryParameters.length; i++) {
-        homeMovieLists.add(await movieRepository.getMovies(1));
+        for (int i = 0; i < event.movieRequestLink.length; i++) {
+        homeMovieLists.add(await movieRepository.getMovies(1, event.movieRequestLink[i]));
         }
         emit(HomeMovieListsLoaded(homeMovieLists: homeMovieLists));
         

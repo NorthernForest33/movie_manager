@@ -4,16 +4,20 @@ abstract class MovieListEvent extends Equatable {}
 
 // ignore: must_be_immutable
 class LoadMovieList extends MovieListEvent {
-  final Map<String, String> queryParameters;
-  List<Movie>? movieList = [];
+  final String query;
+  bool get isSearchMode => query.isNotEmpty;
   final Completer? completer;
 
-  LoadMovieList(
-      {
-      this.completer,
-      this.movieList,
-      this.queryParameters = MovieListRequestParametrs.popularMovies});
+  LoadMovieList({
+    this.query = '',
+    this.completer,
+  });
 
   @override
-  List<Object?> get props => [completer, queryParameters];
+  List<Object?> get props => [completer, query];
+}
+
+class ResetMovieList extends MovieListEvent {
+  @override
+  List<Object?> get props => [];
 }

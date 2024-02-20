@@ -6,7 +6,6 @@ import 'package:movie_manager/domain/blocs/movie_list_bloc/movie_list_bloc.dart'
 import 'package:movie_manager/presentation/search/widgets/movie_card_widget.dart';
 import 'package:movie_manager/presentation/search/widgets/search_button_widget.dart';
 import 'package:movie_manager/presentation/widgets/failure_message_widget.dart';
-import 'package:movie_manager/repositories/movie_repository/movie_repository.dart';
 
 @RoutePage()
 class SearchMovieScreen extends StatefulWidget {
@@ -34,8 +33,7 @@ class _SearchMovieScreenState extends State<SearchMovieScreen> {
           final completer = Completer();
           movieListBloc.add(LoadMovieList(
               completer: completer,
-              queryParameters: MovieListRequestParametrs()
-                  .searchRequstParametrs(searchTextController.text, '1')));
+              query: searchTextController.text));
           return completer.future;
         },
         color: theme.primaryColor,
@@ -65,7 +63,7 @@ class _SearchMovieScreenState extends State<SearchMovieScreen> {
             BlocBuilder<MovieListBloc, MovieListState>(
               builder: (context, state) {
                 if (state is MovieListLoaded) {
-                  final movieList = state.movieList;
+                  final movieList = state.movieListContainer.movies;
                   return MovieCardWidget(
                       movieList: movieList,
                       searchTextController: searchTextController);

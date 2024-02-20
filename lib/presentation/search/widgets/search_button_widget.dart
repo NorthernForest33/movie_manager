@@ -1,9 +1,7 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_manager/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
-import 'package:movie_manager/repositories/movie_repository/movie_repository.dart';
 
 class SearchButtonWidget extends StatelessWidget {
   const SearchButtonWidget(
@@ -30,9 +28,8 @@ class SearchButtonWidget extends StatelessWidget {
           onChanged: (query) {
             searchDebounce?.cancel();
             searchDebounce = Timer(const Duration(milliseconds: 500), () async {
-              bloc.add(LoadMovieList(
-                  queryParameters: MovieListRequestParametrs()
-                      .searchRequstParametrs(query, '1')));
+              bloc.add(ResetMovieList());
+              bloc.add(LoadMovieList(query: query));
             });
           },
           onTap: () {
