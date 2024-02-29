@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movie_manager/domain/blocs/home_movie_lists_bloc/home_movie_lists_bloc.dart';
+import 'package:movie_manager/domain/blocs/movie_details_bloc/movie_details_bloc.dart';
 import 'package:movie_manager/domain/blocs/movie_list_bloc/movie_list_bloc.dart';
 import 'package:movie_manager/repositories/movie_repository/movie_repository.dart';
 import 'package:movie_manager/router/router.dart';
@@ -34,6 +35,9 @@ class _MovieManagerAppState extends State<MovieManagerApp> {
                 movieRepository:
                     RepositoryProvider.of<MovieRepository>(context)),
           ),
+          BlocProvider( create: (context) => MovieDetailsBloc(
+                movieRepository:
+                    RepositoryProvider.of<MovieRepository>(context)),)
         ],
         child: MaterialApp.router(
           title: 'Movie manager',

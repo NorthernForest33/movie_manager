@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:movie_manager/domain/entity/movie_response/movie_details.dart';
 import 'package:movie_manager/domain/entity/movie_response/movie_response.dart';
 
 class MovieRequestLink {
@@ -47,6 +48,48 @@ class MovieRepository {
     final result = MovieResponse.fromJson(jsonMap);
     return result;
   }
+
+  Future<MovieDetails> getMovieDetails(int id) async {
+    print('try Details');
+    final dynamic json = await Dio().get('$_host/movie/$id', queryParameters: {
+      'api_key': _apiKey,
+      'language': 'en-US',
+      'movie_id': id,
+    });
+    print('get Details');
+    final jsonMap = json.data as Map<String, dynamic>;
+    var result = MovieDetails.fromJson(jsonMap);
+    result.credits = await _getMovieDetailsCredits(id);
+    result.videos = await _getMovieDetailsVideos(id);
+    return result;
+  }
+
+Future<MovieDetailsCredits> _getMovieDetailsCredits(int id) async {
+  print('try Credits');
+  final dynamic json = await Dio().get('$_host/movie/$id/credits', queryParameters: {
+      'api_key': _apiKey,
+      'language': 'en-US',
+      'movie_id': id,
+    });
+    print('get Credits');
+    final jsonMap = json.data as Map<String, dynamic>;
+    final result = MovieDetailsCredits.fromJson(jsonMap);
+    return result;
+}
+
+Future<MovieDetailsVideos> _getMovieDetailsVideos(int id) async {
+  print('try Videos');
+  final dynamic json = await Dio().get('$_host/movie/$id/videos', queryParameters: {
+      'api_key': _apiKey,
+      'language': 'en-US',
+      'movie_id': id,
+    });
+    print('get Videos');
+    final jsonMap = json.data as Map<String, dynamic>;
+    final result = MovieDetailsVideos.fromJson(jsonMap);
+    return result;
+}
+
 }
 
 class ImageDownLoader {

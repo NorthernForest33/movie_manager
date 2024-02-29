@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:movie_manager/domain/entity/movie_response/movie_details.dart';
 
 part 'movie.g.dart';
 
@@ -20,6 +21,7 @@ class Movie {
   final int voteCount;
   final bool video;
   final double voteAverage;
+  MovieDetails? details;
 
   Movie({
     required this.posterPath,
@@ -36,6 +38,7 @@ class Movie {
     required this.voteCount,
     required this.video,
     required this.voteAverage,
+    required this.details
   });
 
   factory Movie.fromJson(Map<String, dynamic> json) => _$MovieFromJson(json);
